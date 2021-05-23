@@ -9,7 +9,10 @@ port = 5001
 bufferSize = 512
 
 # RTP session class
-# ...
+class rtpSession:
+    def __init__(self, clientIp):
+        self.clientIp = clientIp
+
 
 # listener thread class
 class listenerThread (threading.Thread):
