@@ -14,6 +14,18 @@ class rtpSession:
         self.clientIp = clientIp
 
 
+# message handler function
+def handleMessage(msgStr, senderIp):
+    if msgStr == "init":
+        # create knew rtp session
+        newSession = rtpSession(senderIp)
+        print("created new RTP session instance (" + format(senderIp) + ")")
+    elif msgStr == "disconnect":
+        # end the rtp session with the matching ip address
+        print("terminated RTP session instance (" + format(senderIp) + ")")
+    else:
+        print("registered heartbeat (" + format(senderIp) + ")")
+
 # listener thread class
 class listenerThread (threading.Thread):
     def __init__(self, name):
@@ -32,6 +44,10 @@ class listenerThread (threading.Thread):
                 clientAddr = bytesRecv[1]
                 clientAddrStr = format(clientAddr)
                 print("Message From (" + clientAddrStr + ") : " + message)
+
+                # handle the receivved message
+                handleMessage(message, clientAddr)
+
             except:
                 break            
 
