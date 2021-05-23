@@ -42,10 +42,8 @@ class listenerThread (threading.Thread):
                 bytesRecv = serverSocket.recvfrom(bufferSize)
                 message = format(bytesRecv[0])
                 clientAddr = bytesRecv[1]
-                clientAddrStr = format(clientAddr)
-                print("Message From (" + clientAddrStr + ") : " + message)
 
-                # handle the receivved message
+                # handle the received message
                 handleMessage(message, clientAddr)
 
             except:
