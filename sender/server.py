@@ -15,8 +15,7 @@ sessions = []
 # RTP session class
 class RtpSession:
     def __init__(self, clientIp):
-        self.clientIp = clientIp
-        self.name = format(clientIp)
+        self.name = clientIp
 
         # launch the gstreamer RTP session
         cmd = "screen -dmS " + self.name + " ./sessionStream.sh " + self.name
@@ -25,20 +24,20 @@ class RtpSession:
 
 
 # message handler function
-def handleMessage(msgStr, senderIp):
-    msgStr = codecs.decode(msgStr)
+def handleMessage(encMessage, senderIp):
+    msgStr = codecs.decode(encMessage)
     print("message: " + msgStr)
     if msgStr == "init":
         # create new rtp session and add it to the list
         newSession = RtpSession(senderIp)
         sessions.append(newSession)
-        print("created new RTP session instance (" + format(senderIp) + ")")
+        print("created new RTP session instance (" + senderIp + ")")
     elif msgStr == "disconnect":
         # end the rtp session with the matching ip address
         # ...
-        print("terminated RTP session instance (" + format(senderIp) + ")")
+        print("terminated RTP session instance (" + senderIp + ")")
     else:
-        print("registered heartbeat (" + format(senderIp) + ")")
+        print("registered heartbeat (" + senderIp + ")")
 
 # listener thread class
 class ListenerThread (threading.Thread):
@@ -54,11 +53,11 @@ class ListenerThread (threading.Thread):
             print("Waiting for messages ...")
             try:
                 bytesRecv = serverSocket.recvfrom(bufferSize)
-                message = format(bytesRecv[0])
-                clientAddr = bytesRecv[1]
+                encMsg = format(bytesRecv[0])
+                clientAddr = bytesRecv[1][0]
 
                 # handle the received message
-                handleMessage(message, clientAddr)
+                handleMessage(encMsg, clientAddr)
 
             except InterruptedError:
                 break            
