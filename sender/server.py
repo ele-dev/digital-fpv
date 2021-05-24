@@ -24,16 +24,18 @@ class RtpSession:
         self.pipeline = Gst.parse_launch(f"v4l2src device=/dev/video0 ! image/jpeg,width=1280,height=720,framerate=30/1,format=MJPG ! nvv4l2decoder mjpeg=1 ! nvvidconv ! video/x-raw(memory:NVMM),format=NV12 ! omxh265enc iframeinterval=0 ! video/x-h265,format=NV12,stream-format=byte-stream ! h265parse config-interval=-1 ! rtph265pay name=pay0 pt=96 config-interval=1 ! udpsink host=" + clientIp + " port=5000")
         self.pipeline.set_state(Gst.State.PLAYING)
         print("Sending streaming to " + self.name + " now")
-    
+
     def terminate(self):
+        # self.pipeline.set_state(Gst.State.PAUSED)
+        # self.pipeline.set_state(Gst.State.READY)
         self.pipeline.set_state(Gst.State.NULL)
+        # self.pipeline.unref()
         sessions.remove(self)
 
 # terminate all remaining pipelines
 def terminateStreamSessions():
     for x in sessions:
-        x.pipeline.set_state(Gst.State.NULL)
-        sessions.remove(x)
+        x.terminate()
     print("All stream sessions terminated")
 
 # function to obtain a specific session
