@@ -21,7 +21,9 @@ class RtpSession:
         self.name = clientIp
 
         # launch the gstreamer RTP pipeline for this session
-        self.pipeline = Gst.parse_launch(f"v4l2src device=/dev/video0 ! image/jpeg,width=1280,height=720,framerate=30/1,format=MJPG ! nvv4l2decoder mjpeg=1 ! nvvidconv ! video/x-raw(memory:NVMM),format=NV12 ! omxh265enc iframeinterval=0 ! video/x-h265,format=NV12,stream-format=byte-stream ! h265parse config-interval=-1 ! rtph265pay name=pay0 pt=96 config-interval=1 ! udpsink host=" + clientIp + " port=5000")
+        pipe_cmd="v4l2src device=/dev/video0 ! image/jpeg,width=1280,height=720,framerate=30/1,format=MJPG ! nvv4l2decoder mjpeg=1 ! nvvidconv ! video/x-raw(memory:NVMM),format=NV12 ! omxh265enc iframeinterval=0 ! video/x-h265,format=NV12,stream-format=byte-stream ! h265parse config-interval=-1 ! rtph265pay name=pay0 pt=96 config-interval=1 ! udpsink host=" + clientIp + " port=5000"
+        altCmd = "videotestsrc ! video/x-raw,width=640,height=480,framerate30/1 ! x265enc ! h265parse ! rtph265pay ! udpsink host=" + clientIp + " port=5000"
+        self.pipeline = Gst.parse_launch(altCmd)
         self.pipeline.set_state(Gst.State.PLAYING)
         print("Sending streaming to " + self.name + " now")
 
