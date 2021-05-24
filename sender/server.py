@@ -28,6 +28,7 @@ class RtpSession:
     
     def terminate(self):
         self.pipeline.set_state(Gst.State.NULL)
+        sessions.remove(self)
 
 # terminate all remaining pipelines
 def terminateStreamSessions():
@@ -35,6 +36,13 @@ def terminateStreamSessions():
         x.pipeline.set_state(Gst.State.NULL)
         sessions.remove(x)
     print("All stream sessions terminated")
+
+# function to obtain a specific session
+def getSessionByName(name):
+    for x in sessions:
+        if x.name == name:
+            return x
+    return None
 
 # message handler function
 def handleMessage(encMessage, senderIp):
@@ -46,8 +54,11 @@ def handleMessage(encMessage, senderIp):
         print("created new RTP session instance (" + senderIp + ")")
     elif msgStr == "disconnect":
         # end the rtp session with the matching ip address
-        # ...
-        print("terminated RTP session instance (" + senderIp + ")")
+        try:
+            getSessionByName(senderIp).terminate()
+            print("Terminated session (" + senderIp + ")")
+        except:
+            print("failed to terminate session!")
     else:
         print("registered heartbeat (" + senderIp + ")")
 
