@@ -10,7 +10,7 @@ import threading
 import time
 
 # globals
-videoSenderIp = "127.0.0.1" 
+videoSenderIp = "10.66.66.10" 
 port = 5001
 heartbeat = 5       # every 5s 
 exitFlag = 0
