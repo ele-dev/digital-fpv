@@ -53,7 +53,7 @@ class ListenerThread (threading.Thread):
             print("Waiting for messages ...")
             try:
                 bytesRecv = serverSocket.recvfrom(bufferSize)
-                encMsg = format(bytesRecv[0])
+                encMsg = bytesRecv[0]
                 clientAddr = bytesRecv[1][0]
 
                 # handle the received message
