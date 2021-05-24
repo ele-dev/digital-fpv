@@ -2,9 +2,7 @@
 
 # python3 RTP Player 
 
-import sys
 import subprocess
-import copy
 import socket
 import threading
 import time
@@ -39,13 +37,6 @@ class BackgroundThread (threading.Thread):
 
 
 ### main part ###
-
-# check the command line arguments 
-args = copy.copy(sys.argv)
-if len(args) < 2:
-    print("No cmd arguments")
-else:
-    print("CMD arguments are present")
 
 # print the configuration parameters
 print("IP of the sender:", videoSenderIp)

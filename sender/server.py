@@ -2,7 +2,6 @@
 
 import socket
 import threading
-import subprocess
 import codecs
 import gi
 gi.require_version('Gst', '1.0')
