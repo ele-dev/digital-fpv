@@ -72,7 +72,7 @@ print("Receive buffer size: " + str(bufferSize))
 # create UDP server socket and the bind it to the service port
 print("create server socket and bind it")
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-serverSocket.bind(("127.0.0.1", port))
+serverSocket.bind(("10.66.66.10", port))
 
 # create and launch the listener thread
 thListener = ListenerThread("listener-Thread")
