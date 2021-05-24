@@ -8,6 +8,9 @@ import subprocess
 port = 5001
 bufferSize = 512
 
+# session list
+sessions = []
+
 # RTP session class
 class rtpSession:
     def __init__(self, clientIp):
@@ -17,11 +20,13 @@ class rtpSession:
 # message handler function
 def handleMessage(msgStr, senderIp):
     if msgStr == "init":
-        # create knew rtp session
+        # create knew rtp session and add it to the list
         newSession = rtpSession(senderIp)
+        sessions.append(newSession)
         print("created new RTP session instance (" + format(senderIp) + ")")
     elif msgStr == "disconnect":
         # end the rtp session with the matching ip address
+        # ...
         print("terminated RTP session instance (" + format(senderIp) + ")")
     else:
         print("registered heartbeat (" + format(senderIp) + ")")
