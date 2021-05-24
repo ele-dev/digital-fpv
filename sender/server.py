@@ -5,7 +5,7 @@ import threading
 import codecs
 import gi
 gi.require_version('Gst', '1.0')
-from gi.repository import Gst, GLib, GObject
+from gi.repository import Gst
 
 # globals 
 port = 5001
