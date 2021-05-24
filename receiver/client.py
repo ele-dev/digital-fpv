@@ -8,6 +8,7 @@ import copy
 import socket
 import threading
 import time
+import codecs
 
 # globals
 videoSenderIp = "10.66.66.10" 
@@ -27,12 +28,12 @@ class BackgroundThread (threading.Thread):
 
         # send heartbeat message
         hbMsg = "heartbeat"
-        sock.sendto(hbMsg.encode(), (videoSenderIp, port))
+        sock.sendto(codecs.encode(hbMsg), (videoSenderIp, port))
 
         while exitFlag == 0:
             time.sleep(heartbeat)
             # send heartbeat message
-            sock.sendto(hbMsg.encode(), (videoSenderIp, port))
+            sock.sendto(codecs.encode(hbMsg), (videoSenderIp, port))
 
         print("background thread closed")
 
@@ -58,7 +59,7 @@ th1 = BackgroundThread("backgroundThread")
 message = "init"
 
 # send initial message to sender
-sock.sendto(message.encode(), (videoSenderIp, port))
+sock.sendto(codecs.encode(message), (videoSenderIp, port))
 
 # launch background thread to send heartbeat signal periodically
 th1.start()
@@ -75,7 +76,7 @@ while th1.is_alive():
 
 # send the disconnect message to the sender
 message = "disconnect"
-sock.sendto(message.encode(), (videoSenderIp, port))
+sock.sendto(codecs.encode(message), (videoSenderIp, port))
 
 # close the client socket
 print("Closing UDP socket ...")
