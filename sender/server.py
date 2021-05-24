@@ -15,12 +15,16 @@ sessions = []
 class RtpSession:
     def __init__(self, clientIp):
         self.clientIp = clientIp
+        self.name = format(clientIp)
+
+        # launch the gstreamer RTP session
+        # ...
 
 
 # message handler function
 def handleMessage(msgStr, senderIp):
     if msgStr == "init":
-        # create knew rtp session and add it to the list
+        # create new rtp session and add it to the list
         newSession = RtpSession(senderIp)
         sessions.append(newSession)
         print("created new RTP session instance (" + format(senderIp) + ")")
