@@ -16,7 +16,7 @@ heartbeat = 5       # every 5s
 exitFlag = 0
 
 # background thread class
-class backgroundThread (threading.Thread):
+class BackgroundThread (threading.Thread):
     def __init__(self, name):
         threading.Thread.__init__(self)
         self.name = name
@@ -53,7 +53,7 @@ print("Port:", port)
 # create the UDP socket and the background thread
 print("Creating UDP socket and thread ...")
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
-th1 = backgroundThread("backgroundThread")
+th1 = BackgroundThread("backgroundThread")
 
 message = "init"
 
