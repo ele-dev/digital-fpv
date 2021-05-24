@@ -25,6 +25,7 @@ class RtpSession:
 
 # message handler function
 def handleMessage(msgStr, senderIp):
+    msgStr = str(msgStr)
     if msgStr == "init":
         # create new rtp session and add it to the list
         newSession = RtpSession(senderIp)
