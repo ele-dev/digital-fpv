@@ -81,6 +81,10 @@ class ListenerThread (threading.Thread):
 print("Service port: " + str(port))
 print("Receive buffer size: " + str(bufferSize))
 
+# init gstreamer
+Gst.init_check(None)
+print("initialized Gstreamer")
+
 # create UDP server socket and the bind it to the service port
 print("create server socket and bind it")
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
