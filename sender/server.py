@@ -60,7 +60,7 @@ class ListenerThread (threading.Thread):
                 # handle the received message
                 handleMessage(message, clientAddr)
 
-            except:
+            except InterruptedError:
                 break            
 
         print("Listener thread closed")
