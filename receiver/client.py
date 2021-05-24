@@ -71,8 +71,11 @@ output = subprocess.call("playStream.bat", shell=True)
 # stop the background thread and tell the server to stop sending 
 print("Waiting for thread to exit ...")
 exitFlag = 1
-while th1.is_alive():   
-    time.sleep(1)
+while th1.is_alive():
+    try:
+        time.sleep(1)
+    except InterruptedError:
+        break
 
 # send the disconnect message to the sender
 message = "disconnect"
