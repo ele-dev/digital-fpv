@@ -18,7 +18,9 @@ class RtpSession:
         self.name = format(clientIp)
 
         # launch the gstreamer RTP session
-        # ...
+        cmd = "screen -dmS " + self.name + " ./sessionStream.sh " + self.name
+        output = subprocess.call(cmd, shell=True)
+        print("Sending streaming to " + self.name + " now")
 
 
 # message handler function
