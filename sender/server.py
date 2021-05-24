@@ -3,6 +3,7 @@
 import socket
 import threading
 import subprocess
+import codecs
 
 # globals 
 port = 5001
@@ -25,7 +26,8 @@ class RtpSession:
 
 # message handler function
 def handleMessage(msgStr, senderIp):
-    msgStr = str(msgStr)
+    msgStr = codecs.decode(msgStr)
+    print("message: " + msgStr)
     if msgStr == "init":
         # create new rtp session and add it to the list
         newSession = RtpSession(senderIp)
