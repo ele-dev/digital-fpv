@@ -12,7 +12,7 @@ bufferSize = 512
 sessions = []
 
 # RTP session class
-class rtpSession:
+class RtpSession:
     def __init__(self, clientIp):
         self.clientIp = clientIp
 
@@ -21,7 +21,7 @@ class rtpSession:
 def handleMessage(msgStr, senderIp):
     if msgStr == "init":
         # create knew rtp session and add it to the list
-        newSession = rtpSession(senderIp)
+        newSession = RtpSession(senderIp)
         sessions.append(newSession)
         print("created new RTP session instance (" + format(senderIp) + ")")
     elif msgStr == "disconnect":
@@ -32,7 +32,7 @@ def handleMessage(msgStr, senderIp):
         print("registered heartbeat (" + format(senderIp) + ")")
 
 # listener thread class
-class listenerThread (threading.Thread):
+class ListenerThread (threading.Thread):
     def __init__(self, name):
         threading.Thread.__init__(self)
         self.name = name 
@@ -69,7 +69,7 @@ serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 serverSocket.bind(("127.0.0.1", port))
 
 # create and launch the listener thread
-thListener = listenerThread("listener-Thread")
+thListener = ListenerThread("listener-Thread")
 thListener.start()
 
 # mainloop
