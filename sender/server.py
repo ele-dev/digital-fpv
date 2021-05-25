@@ -100,7 +100,7 @@ print("Service port: " + str(port))
 print("Receive buffer size: " + str(bufferSize))
 
 # init gstreamer
-Gst.init_check(None)
+Gst.init(None)
 print("initialized Gstreamer")
 
 # create UDP server socket and the bind it to the service port
