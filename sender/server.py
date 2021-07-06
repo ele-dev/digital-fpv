@@ -12,65 +12,39 @@ from gi.repository import Gst, GObject, GLib
 # globals 
 port = 5001
 bufferSize = 512
-
-# session list
-sessions = []
+receiverIP = '10.66.66.4'
+session_0 = None
 
 # RTP session class
 class RtpSession:
-    def __init__(self, clientIp):
-        sessions.append(self)
-        self.name = clientIp
+    def __init__(self):
 
-        # construct the pipeline
-        # self.pipeline = Gst.Pipeline.new("pipe-" + clientIp)
-        # source = Gst.ElementFactory.make("v4l2src", "source")
-        # sink = Gst.ElementFactory.make("udpsink host=" + clientIp + " port=5000", "sink")
-        # inputFilter = GstElementFactory.make()
-        
-
-        # launch the gstreamer RTP pipeline for this session
-        pipe_cmd="v4l2src device=/dev/video0 ! image/jpeg,width=1280,height=720,framerate=30/1,format=MJPG ! nvv4l2decoder mjpeg=1 ! nvvidconv ! video/x-raw(memory:NVMM),format=NV12 ! omxh265enc iframeinterval=0 ! video/x-h265,format=NV12,stream-format=byte-stream ! h265parse config-interval=-1 ! rtph265pay pt=96 config-interval=1 ! udpsink host=" + clientIp + " port=5000"
+        # launch the gstreamer RTP pipeline
+        pipe_cmd="v4l2src device=/dev/video0 ! image/jpeg,width=1280,height=720,framerate=30/1,format=MJPG ! nvv4l2decoder mjpeg=1 ! nvvidconv ! video/x-raw(memory:NVMM),format=NV12 ! omxh265enc iframeinterval=0 ! video/x-h265,format=NV12,stream-format=byte-stream ! h265parse config-interval=-1 ! rtph265pay pt=96 config-interval=1 ! udpsink host=" + receiverIp + " port=5000"
         self.pipeline.set_state(Gst.State.PLAYING)
-        print("Sending streaming to " + self.name + " now")
+        print("Sending streaming to " + receiverIP + " now")
 
     def terminate(self):
-        # self.pipeline.set_state(Gst.State.PAUSED)
-        # self.pipeline.set_state(Gst.State.READY)
         self.pipeline.set_state(Gst.State.NULL)
         # self.pipeline.unref()
-        sessions.remove(self)
-
-# terminate all remaining pipelines
-def terminateStreamSessions():
-    for x in sessions:
-        x.terminate()
-    print("All stream sessions terminated")
-
-# function to obtain a specific session
-def getSessionByName(name):
-    for x in sessions:
-        if x.name == name:
-            return x
-    return None
 
 # message handler function
 def handleMessage(encMessage, senderIp):
     msgStr = codecs.decode(encMessage)
     print("message: " + msgStr)
     if msgStr == "init":
-        # create new rtp session and add it to the list
-        newSession = RtpSession(senderIp)
-        print("created new RTP session instance (" + senderIp + ")")
+        # create new rtp session
+        session_0 = RtpSession(senderIp)
+        print("created RTP session instance")
     elif msgStr == "disconnect":
-        # end the rtp session with the matching ip address
+        # end the rtp session
         try:
-            getSessionByName(senderIp).terminate()
-            print("Terminated session (" + senderIp + ")")
+            session_0.terminate()
+            print("Terminated session")
         except:
             print("failed to terminate session!")
     else:
-        print("registered heartbeat (" + senderIp + ")")
+        print("registered heartbeat")
 
 # listener thread class
 class ListenerThread (threading.Thread):
@@ -87,10 +61,9 @@ class ListenerThread (threading.Thread):
             try:
                 bytesRecv = serverSocket.recvfrom(bufferSize)
                 encMsg = bytesRecv[0]
-                clientAddr = bytesRecv[1][0]
 
                 # handle the received message
-                handleMessage(encMsg, clientAddr)
+                handleMessage(encMsg)
 
             except InterruptedError:
                 break            
@@ -103,6 +76,7 @@ class ListenerThread (threading.Thread):
 # print configuration parameters
 print("Service port: " + str(port))
 print("Receive buffer size: " + str(bufferSize))
+print("Receiver IP: " + receiverIP)
 
 # init gstreamer
 Gst.init(None)
@@ -127,6 +101,9 @@ print("Closing server socket ...")
 serverSocket.close()
 
 # stop sending RTP stream to clients
-terminateStreamSessions()
+try:
+    session_0.terminate()
+except:
+    print("session already terminated!")
 
 print("Exit")
